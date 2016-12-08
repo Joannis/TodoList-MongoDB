@@ -48,6 +48,86 @@ Todolist implemented for MongoDB backend
     ```
 3. Open the [TodoList Client](http://www.todobackend.com/client/index.html?http://localhost:8090) and enjoy!
 
+## Deploying to Bluemix
+
+### Deploy to Bluemix Button
+
+You can use this button to deploy ToDo your Bluemix account, all from the browser. The button will create the application, create and bind any services specified in the manifest.yml file and deploy.
+
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/IBM-Swift/TodoList-MongoDB#bluemix-mongo)
+
+### Manually
+
+Bluemix is a hosting platform from IBM that makes it easy to deploy your app to the cloud. Bluemix also provides various popular databases. Compose for MongoDB is an offering that is compatible with the MongoDB database. You can use Compose for MongoDB with your deployed TodoList-MongoDB application.
+
+1. Get an account for [Bluemix](https://console.ng.bluemix.net/registration/)
+
+2. Download and install the [Cloud Foundry tools](https://new-console.ng.bluemix.net/docs/starters/install_cli.html):
+
+    ```
+    cf api https://api.ng.bluemix.net
+    cf login
+    ```
+
+    Be sure to run this in the directory where the manifest.yml file is located.
+
+2. Create your MongoDB Service
+
+  ```
+  cf create-service compose-for-mongodb Standard TodoList-MongoDB
+  ```
+
+3. Run `cf push`   
+
+    ***Note** This step will take 3-5 minutes
+
+    ```
+    1 of 1 instances running 
+
+    App started
+    ```
+
+4. Get the credential information
+
+   ```
+   cf env TodoListMongoDBApp
+   ```
+   
+   Note you will see something similar to the following, note the hostname, username, and password:
+   
+   ```json
+"VCAP_SERVICES": {
+	"compose-for-mongodb": [{
+		"credentials": {
+			"ca_certificate_base64": "<base64-string>",
+			"db_type": "mongodb",
+			"deployment_id": "5849981b78ae6b0013000027",
+			"name": "bmix_dal_yp_eaf81143_0baa_4166_ab8e_21bef291190b",
+			"uri": "mongodb://<username>:<password>@bluemix-sandbox-dal-9-portal.5.dblayer.com:19889,bluemix-sandbox-dal-9-portal.4.dblayer.com:19889/admin?ssl=true",
+			"uri_cli": "mongo --ssl --sslAllowInvalidCertificates bluemix-sandbox-dal-9-portal.5.dblayer.com:19889/admin -u <username> -p <password>"
+		},
+		"label": "compose-for-mongodb",
+		"name": "TodoList-MongoDB",
+		"plan": "Standard",
+		"provider": null,
+		"syslog_drain_url": null,
+		"tags": [
+			"big_data",
+			"data_management",
+			"ibm_created"
+		]
+	}]
+}
+ ```
+5. Setup your database
+
+use todolist
+db.createCollection("todolist")
+db.createCollection("todos")
+show dbs
+
+
+
 ### Setting up MongoDB by Compose ###
 
 1. Get an account for [Compose](https://www.compose.com/mongodb/)

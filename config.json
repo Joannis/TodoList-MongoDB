@@ -1,0 +1,45 @@
+{
+  "vcap": {
+    "application_id": "ea661c87-8d67-4ee8-acc2-d1687ddf5f0b",
+    "application_name": "TodoListMongoDBApp",
+    "application_uris": [
+      "todolistmongodbapp-planetary-agogics.mybluemix.net"
+    ],
+    "application_version": "5dbf3c02-b23f-4f16-9aaa-7bc380030666",
+    "limits": {
+      "disk": 1024,
+      "fds": 16384,
+      "mem": 256
+    },
+    "name": "TodoListMongoDBApp",
+    "space_id": "07628d09-5236-4dc0-9330-4388267b33ce",
+    "space_name": "dev",
+    "uris": [
+      "todolistmongodbapp-planetary-agogics.mybluemix.net"
+    ],
+    "users": null,
+    "version": "5dbf3c02-b23f-4f16-9aaa-7bc380030666"
+  },
+  "services": {
+    "compose-for-mongodb": [{
+      "credentials": {
+        "ca_certificate_base64": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURmVENDQW1XZ0F3SUJBZ0lFV0VtWUlEQU5CZ2txaGtpRzl3MEJBUTBGQURCQU1UNHdQQVlEVlFRREREVjAKWm5KaGJtdHNhVzVBZFhNdWFXSnRMbU52YlMxbU1ERXpZalZpWldWak9EUTNOVGsyWkdZeU1qSmxOV0l5WmpsaApZMlZoWmpBZUZ3MHhOakV5TURneE56STRNREJhRncwek5qRXlNRGd4TnpBd01EQmFNRUF4UGpBOEJnTlZCQU1NCk5YUm1jbUZ1YTJ4cGJrQjFjeTVwWW0wdVkyOXRMV1l3TVROaU5XSmxaV000TkRjMU9UWmtaakl5TW1VMVlqSm0KT1dGalpXRm1NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXdmc1pCTGFxNHNUdwpXWDhHVkxYS0VBWnVDVTNTY2NBbVZyOFZFRVMyVWV4T1RUbzBhcWk0ZGxoUFBuRThtbExabzdpQ1RnNzdPTXVuCkY2eGxGNWdSSFI3RW15OFRvTWlpS0ErbzZibzlyQ1czWDBpckNvS0tCdWQvN0p1d0R1Rm84UDBxTFZ1RUR6MHgKQVpkdHBDVDJzVTdnZFpGTTRCczlLOEJsMDZWT2FuQnJMQlJlbkhZUnBpU3lvSEFrN1YvZjFwTW1JMkpQRDlCagppVUlOZWYxR2p4VEZMcmpjaG90TWhkTkdKejZTY0xBdVBSZnZkdkVDMHNXeTNGMEVnc1MwSVdRQmVxU1JsbG11ClBjTkFrY1NGQkhaWXM0K3ZWZ3d6ellyam1QUHFuQkRUR2traUFPQ1BYa0dhMDhJZTBRQ3RrRWtyVzVNYmN1VFQKVjRDZnJsWWovd0lEQVFBQm8zOHdmVEFkQmdOVkhRNEVGZ1FVRUdFaWV2cWZwc2tVVlNERUZ5MjNDQ1d3NTZRdwpEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNCkJnTlZIUk1FQlRBREFRSC9NQjhHQTFVZEl3UVlNQmFBRkJCaElucjZuNmJKRkZVZ3hCY3R0d2dsc09la01BMEcKQ1NxR1NJYjNEUUVCRFFVQUE0SUJBUUFqeTRLcHZlNTdtajIwZDBjeUVmZFVjMzlWemRIMnFzR0phME14dEZZMwpGTi9DMHNMK3BOWFV3UEZ6UXYyeVJtZFFvWmtOdUNJZW1Bdk9WNmpsRXdUOHpxc3B6U00rQVRQakZrVVY3LzJvCnpDbXRFV2NJSUcrVW1venF6bEhxNlRoMzR0MitqR1Vza21HOFZBNXZTOCt5aGtnQ0pVZXRUSVdEekFtdnhUM3UKejFqU1k5ci9Nb25zT24xcDdYUjdhb1hraEpTSnZiblFFTWdubENtNEFvd2FkVVVpVmRjR3NsSVM5UW84RzBNcAp5RnQ2Z2RmYVhOMGRHSWZMMmlYQmJmUStrZ3NLclJXMGNuTWhnWnBQZTEzMG85blRCdFFkN0NWS2VNS1FwWVdjCmFSU2ZMb1pod2ZNZHk1OEVKVVBvbkYzb2NZdlQvS3hlS1BiWEwyekxwdDhnCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+        "db_type": "mongodb",
+        "deployment_id": "5849981b78ae6b0013000027",
+        "name": "bmix_dal_yp_eaf81143_0baa_4166_ab8e_21bef291190b",
+        "uri": "mongodb://admin:QMJVELKIYGOKIGKB@bluemix-sandbox-dal-9-portal.5.dblayer.com:19889,bluemix-sandbox-dal-9-portal.4.dblayer.com:19889/admin?ssl=true",
+        "uri_cli": "mongo --ssl --sslAllowInvalidCertificates bluemix-sandbox-dal-9-portal.5.dblayer.com:19889/admin -u admin -p QMJVELKIYGOKIGKB"
+      },
+      "label": "compose-for-mongodb",
+      "name": "TodoList-MongoDB",
+      "plan": "Standard",
+      "provider": null,
+      "syslog_drain_url": null,
+      "tags": [
+        "big_data",
+        "data_management",
+        "ibm_created"
+      ]
+    }]
+  }
+}

@@ -60,6 +60,18 @@ public class TodoList: TodoListAPI {
             exit(1)
         }
     }
+    
+    public init(databaseURL: URL) {
+        print("url:::: \(databaseURL.absoluteString)")
+        do {
+            server = try Server(databaseURL.absoluteString, automatically: true)
+            
+        } catch {
+            Log.info("MongoDB is not available on the given host: \(databaseURL.host) and port: \(databaseURL.port)")
+            exit(1)
+            
+        }
+    }
 
     public init(database: String = TodoList.defaultDatabaseName, host: String = TodoList.defaultMongoHost, port: UInt16 = TodoList.defaultMongoPort,
         username: String = defaultUsername, password: String = defaultPassword) {

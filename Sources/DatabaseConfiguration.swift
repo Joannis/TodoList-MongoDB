@@ -18,6 +18,7 @@ import Foundation
 
 public struct DatabaseConfiguration {
 
+    public var uri: URL?
     public var host: String?
     public var port: UInt16?
     public var username: String?
@@ -30,5 +31,5 @@ public struct DatabaseConfiguration {
         self.username = username
         self.password = password
     }
-
+    
 }
