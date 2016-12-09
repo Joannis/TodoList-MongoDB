@@ -54,7 +54,7 @@ public class TodoList: TodoListAPI {
         }
 
         do {
-            server = try Server(at: host, port: port, using: authorization, automatically: true)
+            server = try Server(hostname: host, port: port, authenticatedAs: authorization, automatically: true)
         } catch {
             Log.info("MongoDB is not available on host: \(host) and port: \(port)")
             exit(1)
@@ -64,7 +64,7 @@ public class TodoList: TodoListAPI {
     public init(databaseURL: URL) {
         print("url:::: \(databaseURL.absoluteString)")
         do {
-            server = try Server(databaseURL.absoluteString, automatically: true)
+            server = try Server(mongoURL: databaseURL.absoluteString, automatically: true)
             
         } catch {
             Log.info("MongoDB is not available on the given host: \(databaseURL.host) and port: \(databaseURL.port)")
@@ -77,7 +77,7 @@ public class TodoList: TodoListAPI {
         username: String = defaultUsername, password: String = defaultPassword) {
 
          do {
-             server = try Server("mongodb://\(username):\(password)@\(host):\(port)", automatically: true)
+            server = try Server(mongoURL: "mongodb://\(username):\(password)@\(host):\(port)", automatically: true)
 
          } catch {
              Log.info("MongoDB is not available on the given host: \(host) and port: \(port)")

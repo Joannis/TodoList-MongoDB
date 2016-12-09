@@ -29,7 +29,6 @@ import SwiftyJSON
      init(with service: Service) {
 
          if let credentials = service.credentials {
-            print("creds: \(service.credentials)")
             if credentials["port"].string == nil, let neededURL = credentials["uri"].stringValue.components(separatedBy: ",").first,
                 let url = URL(string: neededURL), let port = url.port {
                 self.uri = url
@@ -59,9 +58,10 @@ import SwiftyJSON
  let todos: TodoList
 
  do {
-    if let service = try CloudFoundryEnv.getAppEnv().getService(spec: "TodoList-MongoDB") {
-//        let uri = "mongodb://admin:QMJVELKIYGOKIGKB@bluemix-sandbox-dal-9-portal.5.dblayer.com:19889,bluemix-sandbox-dal-9-portal.4.dblayer.com:19889/admin?ssl=true"
-//        let service = Service(name: "", label: "", plan: "", tags: [""], credentials: JSON(["uri": value]))
+     if let service = try CloudFoundryEnv.getAppEnv().getService(spec: "TodoList-MongoDB") {
+//    if true {
+//        let uri = "mongodb://"
+//        let service = Service(name: "", label: "", plan: "", tags: [""], credentials: JSON(["uri": uri]))
          databaseConfiguration = DatabaseConfiguration(with: service)
          if let dbURL = databaseConfiguration.uri {
              todos = TodoList(databaseURL: dbURL)
