@@ -164,7 +164,7 @@ class TestTodoList: XCTestCase {
                     results, error in
 
                     if let results = results {
-                        XCTAssertEqual(results.count, 1, "There must be at least 1 element in the" +
+                        XCTAssertGreaterThanOrEqual(results.count, 1, "There must be at least 1 element in the" +
                             "collection")
                     }
 

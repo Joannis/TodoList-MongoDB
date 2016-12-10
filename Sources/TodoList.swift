@@ -42,7 +42,7 @@ public class TodoList: TodoListAPI {
     // Find database if it is already running
     public init(_ dbConfiguration: DatabaseConfiguration) {
 
-        var authorization: (username: String, password: String, against: String)? = nil
+        var authorization: MongoCredentials? = nil
         guard let host = dbConfiguration.host,
               let port = dbConfiguration.port else {
 
@@ -50,11 +50,11 @@ public class TodoList: TodoListAPI {
                     exit(1)
         }
         if let username = dbConfiguration.username, let password = dbConfiguration.password {
-               authorization = (username: username, password: password, against: "admin")
+               authorization = MongoCredentials(username: username, password: password, database: "admin")
         }
 
         do {
-            server = try Server(at: host, port: port, using: authorization, automatically: true)
+            server = try Server(ClientSettings(host: MongoHost(hostname: host, port: port), sslSettings: false, credentials: authorization))
         } catch {
             Log.info("MongoDB is not available on host: \(host) and port: \(port)")
             exit(1)
@@ -65,7 +65,7 @@ public class TodoList: TodoListAPI {
         username: String = defaultUsername, password: String = defaultPassword) {
 
          do {
-             server = try Server("mongodb://\(username):\(password)@\(host):\(port)", automatically: true)
+            server = try Server(mongoURL: "mongodb://\(username):\(password)@\(host):\(port)")
 
          } catch {
              Log.info("MongoDB is not available on the given host: \(host) and port: \(port)")
@@ -77,8 +77,6 @@ public class TodoList: TodoListAPI {
     public func count(withUserID: String?, oncompletion: @escaping (Int?, Error?) -> Void) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -97,8 +95,6 @@ public class TodoList: TodoListAPI {
     public func clearAll(oncompletion: @escaping (Error?) -> Void) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -117,8 +113,6 @@ public class TodoList: TodoListAPI {
     public func clear(withUserID: String?, oncompletion: @escaping (Error?) -> Void) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -137,8 +131,6 @@ public class TodoList: TodoListAPI {
     public func get(oncompletion: @escaping ([TodoItem]?, Error?) -> Void ) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -158,8 +150,6 @@ public class TodoList: TodoListAPI {
     public func get(withUserID: String?, oncompletion: @escaping ([TodoItem]?, Error?) -> Void) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -181,23 +171,21 @@ public class TodoList: TodoListAPI {
     public func get(withUserID: String?, withDocumentID: String, oncompletion: @escaping (TodoItem?, Error?) -> Void ) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
             let id = try ObjectId(withDocumentID)
 
-            let query: Query = withUserID != nil ? "userID" == ~withUserID! && "_id" == ~id :
-                                                   "userID" == "default" && "_id" == ~id
+            let query: Query = withUserID != nil ? "userID" == withUserID! && "_id" == id :
+                                                   "userID" == "default" && "_id" == id
 
             let item = try todosCollection.findOne(matching: query)
 
-            guard let sid = item?["_id"].string,
-                  let suid = item?["userID"].string,
-                  let stitle = item?["title"].string,
-                  let srank = item?["rank"].int,
-                  let scompleted = item?["completed"].bool else {
+            guard let sid = item?["_id"] as String?,
+                  let suid = item?["userID"] as String?,
+                  let stitle = item?["title"] as String?,
+                  let srank = item?["rank"] as Int?,
+                  let scompleted = item?["completed"] as Bool? else {
 
                    oncompletion(nil, TodoCollectionError.ParseError)
                    return
@@ -221,21 +209,19 @@ public class TodoList: TodoListAPI {
 
         let todoItem: Document = [
                                     "type": "todo",
-                                    "userID": ~uid,
-                                    "title": ~title,
-                                    "rank": ~rank,
-                                    "completed": ~completed
+                                    "userID": uid,
+                                    "title": title,
+                                    "rank": rank,
+                                    "completed": completed
         ]
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
-            let item = try todosCollection.insert(todoItem)
+            let id = try todosCollection.insert(todoItem).string
 
-            let todoItem = TodoItem(documentID: item["_id"].string, userID: userID, rank: rank, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: id ?? "", userID: userID, rank: rank, title: title, completed: completed)
 
             oncompletion(todoItem, nil)
 
@@ -250,8 +236,6 @@ public class TodoList: TodoListAPI {
         completed: Bool?, oncompletion: @escaping (TodoItem?, Error?) -> Void ) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -259,7 +243,7 @@ public class TodoList: TodoListAPI {
 
             let uid = userID ?? "default"
 
-            let item = try todosCollection.findOne(matching: ["_id": ~id, "userID": ~uid])
+            let item = try todosCollection.findOne(matching: ["_id": id, "userID": uid])
 
             guard let object = item else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -268,19 +252,19 @@ public class TodoList: TodoListAPI {
 
             let updatedTodo: Document = [
                                "type": "todo",
-                               "userID": userID != nil ? ~userID! : ~object["userID"].string,
-                               "title": title != nil ? ~title! : ~object["title"].string,
-                               "rank": rank != nil ? ~rank! : ~Int(object["rank"].string)!,
-                               "completed": completed != nil ? ~completed! : ~object["completed"].bool
+                               "userID": userID != nil ? userID! : object["userID"] as String? ?? "",
+                               "title": title != nil ? title! : object["title"] as String? ?? "",
+                               "rank": rank != nil ? rank! : object["rank"] as Int!,
+                               "completed": completed != nil ? completed! : object["completed"] as Bool? ?? false
             ]
 
-            try todosCollection.update(matching: ["_id": ~id], to: updatedTodo)
+            try todosCollection.update(matching: "_id" == id, to: updatedTodo)
 
             let todoItem = TodoItem(documentID: documentID,
-                                        userID: updatedTodo["userID"].string,
-                                         rank: updatedTodo["rank"].int,
-                                         title: updatedTodo["title"].string,
-                                     completed: updatedTodo["completed"].bool)
+                                        userID: updatedTodo["userID"] as String?,
+                                         rank: updatedTodo["rank"] as Int? ?? 0,
+                                         title: updatedTodo["title"] as String? ?? "",
+                                     completed: updatedTodo["completed"] as Bool? ?? false)
 
             oncompletion(todoItem, nil)
 
@@ -294,8 +278,6 @@ public class TodoList: TodoListAPI {
     public func delete(withUserID: String?, withDocumentID: String, oncompletion: @escaping (Error?) -> Void) {
 
         do {
-            if !server.isConnected { try server.connect() }
-
             let database = server[databaseName]
             let todosCollection = database[collection]
 
@@ -303,11 +285,12 @@ public class TodoList: TodoListAPI {
 
             let uid = withUserID ?? "default"
 
-            try todosCollection.remove(matching: ["_id": ~id, "userID": ~uid])
+            try todosCollection.remove(matching: "_id" == id && "userID" == uid)
 
             oncompletion(nil)
 
         } catch {
+            print(error)
             oncompletion(error)
 
         }
@@ -319,13 +302,13 @@ public class TodoList: TodoListAPI {
         let todos: [TodoItem] = Array(document).flatMap {
             doc in
 
-            let id = doc["_id"].string
-            let userID = doc["userID"].string
-            let title = doc["title"].string
-            let completed = doc["completed"].bool
-            let rank = doc["rank"].int
+            let id = doc["_id"] as String?
+            let userID = doc["userID"] as String?
+            let title = doc["title"] as String?
+            let completed = doc["completed"] as Bool?
+            let rank = doc["rank"] as Int?
 
-            return TodoItem(documentID: id, userID: userID, rank: rank, title: title, completed: completed)
+            return TodoItem(documentID: id ?? "", userID: userID, rank: rank ?? 0, title: title ?? "", completed: completed ?? false)
 
         }
 
